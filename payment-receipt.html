@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payment Receipt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      padding: 20px;
+    }
+    .receipt {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .items-table th, .items-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+    .items-table th {
+      background-color: #f2f2f2;
+    }
+    .total {
+      text-align: right;
+      font-size: 18px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .print-btn {
+      display: block;
+      margin: 30px auto;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .print-btn:hover {
+      background-color: #0056b3;
+    }
+    .order-id {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="receipt">
+  <h2>Order Receipt</h2>
+  <div class="order-id">
+    <strong>Order ID:</strong> <span id="order-id"></span>
+  </div>
+
+  <div class="section" id="user-info">
+    <h3>Customer Information</h3>
+    <p><strong>Name:</strong> <span id="name"></span></p>
+    <p><strong>Mobile:</strong> <span id="mobile"></span></p>
+    <p><strong>Address:</strong> <span id="address"></span></p>
+  </div>
+
+  <div class="section">
+    <h3>Items Purchased</h3>
+    <table class="items-table" id="items-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price (₹)</th>
+          <th>Total (₹)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="total">Grand Total: ₹<span id="total"></span></div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">Print Receipt</button>
+</div>
+
+<script>
+  // Generate a 10-digit random order ID
+  function generateOrderID() {
+    let orderId = '';
+    for (let i = 0; i < 10; i++) {
+      orderId += Math.floor(Math.random() * 10);
+    }
+    return orderId;
+  }
+
+  // Set the order ID
+  document.getElementById("order-id").textContent = generateOrderID();
+
+  // Load user details
+  const user = JSON.parse(localStorage.getItem("userDetails"));
+  if (user) {
+    document.getElementById("name").textContent = user.name;
+    document.getElementById("mobile").textContent = user.mobile;
+    document.getElementById("address").textContent = user.address;
+    document.getElementById("total").textContent = parseFloat(user.total || 0).toFixed(2);
+  }
+
+  // Load cart items
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const tableBody = document.querySelector("#items-table tbody");
+
+  cartItems.forEach(item => {
+    const row = document.createElement("tr");
+    const qty = parseInt(item.quantity) || 1;
+    const price = parseFloat(item.price) || 0;
+    const itemTotal = qty * price;
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${qty}</td>
+      <td>₹${price.toFixed(2)}</td>
+      <td>₹${itemTotal.toFixed(2)}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+</script>
+
+</body>
+</html>

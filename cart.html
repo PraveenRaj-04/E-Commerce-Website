@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .cart-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 15px;
+    }
+    .cart-details {
+      display: flex;
+      align-items: center;
+    }
+    .remove-button, .quantity-button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+    .quantity-controls {
+      margin-top: 5px;
+    }
+    .quantity-controls button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .total {
+      text-align: right;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Your Cart</h2>
+    <div id="cart-container"></div>
+    <div class="total">Total: ₹<span id="total-price">0.00</span></div>
+  </div>
+
+  <script>
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function renderCart() {
+      const container = document.getElementById('cart-container');
+      container.innerHTML = '';
+      let total = 0;
+
+      cartItems.forEach((item, index) => {
+        const price = parseFloat(item.price) || 0;
+        const quantity = parseInt(item.quantity) || 0;
+        const itemTotal = price * quantity;
+        total += itemTotal;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+        itemDiv.innerHTML = `
+          <div class="cart-details">
+            <img src="${item.image}" alt="${item.name}">
+            <div>
+              <div><strong>${item.name}</strong></div>
+              <div>Qty: ${quantity}</div>
+              <div class="quantity-controls">
+                <button onclick="changeQuantity(${index}, -1)">-</button>
+                <button onclick="changeQuantity(${index}, 1)">+</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            ₹${itemTotal.toFixed(2)}
+            <br/>
+            <button class="remove-button" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+      });
+
+      document.getElementById('total-price').textContent = total.toFixed(2);
+    }
+
+    function removeFromCart(index) {
+      cartItems.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      renderCart();
+    }
+
+    function changeQuantity(index, change) {
+      cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      renderCart();
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

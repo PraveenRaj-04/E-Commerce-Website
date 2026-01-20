@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .wallet-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .balance {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 20px;
+      color: #28a745;
+    }
+    .actions {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .actions button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .add {
+      background-color: #007bff;
+      color: white;
+    }
+    .clear {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wallet-container">
+  <h2>My Wallet</h2>
+  <div class="balance">Wallet Balance: ₹<span id="walletBalance">0.00</span></div>
+
+  <div class="actions">
+    <button class="add" onclick="addMoney()">Add ₹100</button>
+    <button class="clear" onclick="clearWallet()">Clear Wallet</button>
+  </div>
+</div>
+
+<script>
+  function updateWalletDisplay() {
+    const balance = parseFloat(localStorage.getItem("walletBalance")) || 0;
+    document.getElementById("walletBalance").textContent = balance.toFixed(2);
+  }
+
+  function addMoney() {
+    let balance = parseFloat(localStorage.getItem("walletBalance")) || 0;
+    balance += 100;
+    localStorage.setItem("walletBalance", balance.toFixed(2));
+    updateWalletDisplay();
+  }
+
+  function clearWallet() {
+    localStorage.removeItem("walletBalance");
+    updateWalletDisplay();
+  }
+
+  updateWalletDisplay();
+</script>
+
+</body>
+</html>

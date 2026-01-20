@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Receipt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .details, .payment {
+      margin-top: 20px;
+    }
+    .details p, .payment p {
+      font-size: 16px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .table th, .table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    .table th {
+      background: #f0f0f0;
+    }
+    .back {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .back a {
+      text-decoration: none;
+      color: #007bff;
+    }
+    .print-button {
+      margin-top: 20px;
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .print-button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Receipt</h2>
+
+    <!-- Order ID Section -->
+    <div class="order-id">
+      <h3>Order ID:</h3>
+      <p><strong>Order ID:</strong> <span id="order-id">N/A</span></p>
+    </div>
+
+    <!-- User Details Section -->
+    <div class="details">
+      <h3>User Details:</h3>
+      <p><strong>Name:</strong> <span id="user-name">N/A</span></p>
+      <p><strong>Address:</strong> <span id="user-address">N/A</span></p>
+      <p><strong>Pin Code:</strong> <span id="user-pincode">N/A</span></p>
+    </div>
+
+    <!-- Product Information Section -->
+    <div class="order-summary">
+      <h3>Order Summary:</h3>
+      <table class="table">
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+        </tr>
+        <!-- Dynamic Order Rows Here -->
+      </table>
+      <p><strong>Grand Total:</strong> ₹<span id="total-amount">0.00</span></p>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="payment">
+      <h3>Payment Method:</h3>
+      <p><strong>Payment Type:</strong> <span id="payment-method">N/A</span></p>
+    </div>
+
+    <!-- Print Button -->
+    <button class="print-button" onclick="window.print()">Print Receipt</button>
+
+    <div class="back">
+      <a href="index.html">← Back to Shop</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const queryParams = new URLSearchParams(window.location.search);
+      const totalAmount = queryParams.get("total") || 0;
+      const paymentMethod = queryParams.get("payment") || "N/A";
+      const orderId = queryParams.get("orderId") || generateOrderId();
+
+      // Display Order ID
+      document.getElementById("order-id").textContent = orderId;
+
+      // Display User Details
+      document.getElementById("user-name").textContent = localStorage.getItem("userName") || "N/A";
+      document.getElementById("user-address").textContent = localStorage.getItem("userAddress") || "N/A";
+      document.getElementById("user-pincode").textContent = localStorage.getItem("userPincode") || "N/A";
+
+      // Display Payment Method and Total
+      document.getElementById("payment-method").textContent = paymentMethod;
+      document.getElementById("total-amount").textContent = totalAmount;
+
+      // Assuming cart items are saved in localStorage
+      const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+
+      // Display Cart Items
+      const table = document.querySelector(".table");
+      cartItems.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name} (${item.size})</td>
+          <td>₹${item.price}</td>
+          <td>${item.quantity}</td>
+          <td>₹${(item.price * item.quantity).toFixed(2)}</td>
+        `;
+        table.appendChild(row);
+      });
+    });
+
+    // Generate a random order ID
+    function generateOrderId(length = 10) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      return Array.from({length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    }
+  </script>
+
+</body>
+</html>

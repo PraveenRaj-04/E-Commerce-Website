@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Buy Now - Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .payment-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border 0.2s ease;
+    }
+
+    .payment-option:hover {
+      border-color: #007bff;
+    }
+
+    .payment-option input {
+      margin-right: 10px;
+    }
+
+    .continue-button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .continue-button:hover {
+      background-color: #0056b3;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+    }
+
+    #qrCodeDisplay {
+      text-align: center;
+      display: none;
+      margin-top: 15px;
+    }
+
+    #qrCodeDisplay img {
+      height: 200px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Payment</h2>
+    <p>How would you like to pay?</p>
+
+    <label class="payment-option">
+      <input type="radio" name="payment" value="wallet">
+      Wallet
+    </label>
+
+    <label class="payment-option">
+      <input type="radio" name="payment" value="qr-code">
+      Pay via QR Code
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=upi://pay&size=80x80" alt="QR Code" style="height: 40px; margin-left: auto;">
+    </label>
+
+    <button class="continue-button" onclick="processPayment()">Continue to Contact</button>
+
+    <div id="qrCodeDisplay">
+      <p>Scan this QR Code to pay:</p>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=upi://pay&size=200x200" alt="Full QR Code">
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const totalPrice = 300; // Simulate total cost
+
+    function processPayment() {
+      const selected = document.querySelector('input[name="payment"]:checked');
+      const message = document.getElementById("message");
+      const qrCodeDisplay = document.getElementById("qrCodeDisplay");
+      message.innerHTML = "";
+      qrCodeDisplay.style.display = "none";
+
+      if (!selected) {
+        message.innerHTML = "Please select a payment method.";
+        return;
+      }
+
+      const paymentMethod = selected.value;
+
+      if (paymentMethod === "wallet") {
+        message.innerHTML = "Payment via wallet selected. Redirecting...";
+      } else if (paymentMethod === "qr-code") {
+        qrCodeDisplay.style.display = "block";
+        message.innerHTML = "Scan the QR code to complete payment.";
+      }
+    }
+  </script>
+
+</body>
+</html>
